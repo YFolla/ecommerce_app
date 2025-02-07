@@ -18,8 +18,25 @@ pool.on('error', (err, client) => {
     process.exit(-1);
 });
 
+// Test database connection
+const testConnection = async () => {
+    try {
+        const client = await pool.connect();
+        console.log('Successfully connected to PostgreSQL database');
+        client.release();
+        return true;
+    } catch (err) {
+        console.error('Error connecting to the database:', err.message);
+        return false;
+    }
+};
+
+// Test the connection when the module is loaded
+testConnection();
+
 module.exports = {
     query: (text, params) => pool.query(text, params),
     getClient: () => pool.connect(),
     pool,
+    testConnection
 };
